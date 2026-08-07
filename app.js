@@ -679,6 +679,24 @@ $('#import-file').addEventListener('change', async e => {
 /* ═══════════════ Boot ═══════════════ */
 
 if ('serviceWorker' in navigator) {
-  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  // When an updated service worker takes over, reload once so the new version
+  // shows immediately (state is in localStorage, so nothing is lost). The
+  // hadController guard keeps the very first install from causing a reload.
+  let hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController) location.reload();
+    hadController = true;
+  });
+  addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('sw.js');
+      // register() alone doesn't reliably byte-check sw.js; force it now and
+      // whenever the app returns to the foreground
+      reg.update();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update();
+      });
+    } catch { /* offline or unsupported — the app still works */ }
+  });
 }
 show('welcome');

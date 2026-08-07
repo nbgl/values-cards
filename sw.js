@@ -1,4 +1,4 @@
-const VERSION = 'values-v4';
+const VERSION = 'values-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -12,7 +12,13 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: 'reload' bypasses the HTTP cache — without it a new version can
+  // install itself from stale cached bytes and "update" to the old app
+  e.waitUntil(
+    caches.open(VERSION)
+      .then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
