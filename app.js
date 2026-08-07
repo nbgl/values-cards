@@ -269,6 +269,7 @@ $('#btn-undo').addEventListener('click', () => {
 });
 
 $('#btn-sort-back').addEventListener('click', () => show('welcome'));
+$('#btn-piles').addEventListener('click', () => { reviewReturnsToSort = true; show('review'); });
 
 /* Keyboard support (external keyboards happen on iPads) */
 document.addEventListener('keydown', e => {
@@ -389,7 +390,6 @@ $('#btn-review-add').addEventListener('click', openAdd);
 function renderReview() {
   const cur = store.current;
   if (!cur) { show('welcome'); return; }
-  $('#btn-to-report').hidden = !isComplete(cur);
   $('#review-hint').hidden = Object.keys(cur.choices).length === 0;
 
   // Core values shortlist
@@ -553,7 +553,8 @@ function renderReport() {
   const doc = $('#report-doc');
   doc.textContent = '';
   doc.append(el('h1', 'report-title', 'Personal Values Card Sort'));
-  doc.append(el('p', 'report-date', (s.completedAt ? 'Completed ' : 'Started ') + fmtDate(s.completedAt || s.startedAt)));
+  const progressNote = s.completedAt ? '' : ` · in progress, ${s.index} of ${s.order.length} sorted`;
+  doc.append(el('p', 'report-date', (s.completedAt ? 'Completed ' : 'Started ') + fmtDate(s.completedAt || s.startedAt) + progressNote));
 
   const addSection = (catKey, title, ids, ranked = false) => {
     if (!ids.length) return;
@@ -589,7 +590,9 @@ function renderReport() {
 
 function reportText() {
   const s = reportData();
-  const lines = ['PERSONAL VALUES CARD SORT', (s.completedAt ? 'Completed ' : 'Started ') + fmtDate(s.completedAt || s.startedAt), ''];
+  const lines = ['PERSONAL VALUES CARD SORT',
+    (s.completedAt ? 'Completed ' : 'Started ') + fmtDate(s.completedAt || s.startedAt)
+      + (s.completedAt ? '' : ` (in progress, ${s.index} of ${s.order.length} sorted)`), ''];
   const block = (title, ids, ranked) => {
     if (!ids.length) return;
     lines.push(title.toUpperCase());

@@ -1,4 +1,4 @@
-const VERSION = 'values-v3';
+const VERSION = 'values-v4';
 const ASSETS = [
   './',
   './index.html',
