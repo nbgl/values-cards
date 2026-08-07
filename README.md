@@ -38,5 +38,7 @@ D.B. Matthews & P.L. Wilbourne (University of New Mexico, 2001), which is in the
 public domain ("may be copied, adapted, and used without permission"). The
 original PDF is in [`source/`](source/).
 
-App code is MIT-licensed. No build step — it's plain HTML/CSS/JS; to develop,
-serve the directory with any static server.
+The app code is dedicated to the public domain under [CC0 1.0](LICENSE) —
+copy it, adapt it, rehost it, no permission or credit needed, same as the deck.
+No build step — it's plain HTML/CSS/JS; to develop, serve the directory with
+any static server.
