@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Values Card Sort</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Sort 83 values cards to discover what matters most to you. Private, offline-capable, and shareable with someone you trust.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Values">
+<meta name="theme-color" content="#f7f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ═══════════════ WELCOME ═══════════════ -->
+<main id="view-welcome" class="view" hidden>
+  <div class="welcome-wrap">
+    <div class="welcome-cards" aria-hidden="true">
+      <div class="wcard wcard-3"></div>
+      <div class="wcard wcard-2"></div>
+      <div class="wcard wcard-1"><span class="wcard-word">Purpose</span><span class="wcard-blurb">to have meaning and direction in my life</span></div>
+    </div>
+    <h1 class="welcome-title">What matters<br>to you?</h1>
+    <p class="welcome-sub">Sort 83 values, one card at a time, into four piles. There are no right answers — go with your gut, and jot down thoughts as they come.</p>
+    <p class="welcome-meta"><span>83 cards</span><span class="dot">·</span><span>~15 minutes</span><span class="dot">·</span><span>stays on this device</span></p>
+    <div class="welcome-actions">
+      <button id="btn-continue" class="btn btn-primary btn-big" hidden></button>
+      <button id="btn-review-current" class="btn btn-ghost" hidden>Review my piles</button>
+      <button id="btn-start" class="btn btn-primary btn-big">Begin the sort</button>
+      <button id="btn-restart" class="btn btn-ghost" hidden>Start a new sort</button>
+    </div>
+    <section id="past-sorts" class="past-sorts" hidden>
+      <h2 class="section-label">Past sorts</h2>
+      <ul id="past-sorts-list" class="past-list"></ul>
+    </section>
+    <footer class="credits">
+      <button id="btn-import" class="linklike">Restore from backup</button>
+      <input type="file" id="import-file" accept=".json,application/json" hidden>
+      <p>Adapted from the <em>Personal Values Card Sort</em> — W.R. Miller, J. C’de Baca, D.B. Matthews &amp; P.L. Wilbourne, University of New Mexico, 2001. Public domain.</p>
+    </footer>
+  </div>
+</main>
+
+<!-- ═══════════════ SORT ═══════════════ -->
+<main id="view-sort" class="view" hidden>
+  <header class="sort-header">
+    <button id="btn-sort-back" class="iconbtn" aria-label="Back to welcome">‹</button>
+    <div class="progress-wrap">
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+      <span id="progress-text" class="progress-text"></span>
+    </div>
+    <button id="btn-undo" class="iconbtn" aria-label="Undo last choice" disabled>↩︎</button>
+    <button id="btn-add-value" class="iconbtn" aria-label="Add your own value">＋</button>
+  </header>
+
+  <div class="sort-stage">
+    <div class="zone-hint zone-hint-top" data-zone="imp">Important</div>
+    <div class="zone-hint zone-hint-right" data-zone="very">Very<br>important</div>
+    <div class="zone-hint zone-hint-left" data-zone="not">Not<br>important</div>
+    <div class="zone-hint zone-hint-bottom" data-zone="unsure">Unsure</div>
+    <div class="deck">
+      <div class="card card-ghost card-ghost-2" aria-hidden="true"></div>
+      <div class="card card-ghost card-ghost-1" aria-hidden="true"></div>
+      <article id="active-card" class="card card-active" tabindex="0">
+        <span id="card-number" class="card-number"></span>
+        <h2 id="card-word" class="card-word"></h2>
+        <p id="card-blurb" class="card-blurb"></p>
+        <button id="btn-card-note" class="card-note-btn">✎ <span id="card-note-label">Add a thought</span></button>
+        <div id="card-stamp" class="card-stamp" aria-hidden="true"></div>
+      </article>
+    </div>
+  </div>
+
+  <div class="sort-buttons">
+    <button class="pilebtn pile-not" data-cat="not"><span class="pilebtn-arrow">←</span><span>Not important</span></button>
+    <button class="pilebtn pile-unsure" data-cat="unsure"><span class="pilebtn-arrow">↓</span><span>Unsure</span></button>
+    <button class="pilebtn pile-imp" data-cat="imp"><span class="pilebtn-arrow">↑</span><span>Important</span></button>
+    <button class="pilebtn pile-very" data-cat="very"><span class="pilebtn-arrow">→</span><span>Very important</span></button>
+  </div>
+</main>
+
+<!-- ═══════════════ REVIEW ═══════════════ -->
+<main id="view-review" class="view" hidden>
+  <header class="bar-header">
+    <button id="btn-review-back" class="iconbtn" aria-label="Back">‹</button>
+    <h1 class="bar-title">Your piles</h1>
+    <button id="btn-review-add" class="iconbtn" aria-label="Add your own value">＋</button>
+    <button id="btn-to-report" class="btn btn-primary btn-small">Report</button>
+  </header>
+  <p id="review-hint" class="review-hint">Tap any card to move it, add a note, or ★ star it as one of your core values. Starred cards become a ranked shortlist.</p>
+  <section id="top-values" class="top-values" hidden>
+    <h2 class="section-label">★ My core values <span class="section-note">drag to rank</span></h2>
+    <ol id="top-list" class="top-list"></ol>
+  </section>
+  <div id="pile-columns" class="pile-columns"></div>
+</main>
+
+<!-- ═══════════════ REPORT ═══════════════ -->
+<main id="view-report" class="view" hidden>
+  <header class="bar-header no-print">
+    <button id="btn-report-back" class="iconbtn" aria-label="Back">‹</button>
+    <h1 class="bar-title">Report</h1>
+    <span class="bar-spacer"></span>
+  </header>
+  <div class="share-row no-print">
+    <button id="btn-share" class="btn btn-primary">Share…</button>
+    <button id="btn-print" class="btn">Print / PDF</button>
+    <button id="btn-copy" class="btn">Copy text</button>
+    <button id="btn-backup" class="btn">Backup file</button>
+  </div>
+  <p class="share-note no-print">“Share…” opens the share sheet — AirDrop, Mail or Messages it straight to your psychologist. Print / PDF gives a clean printable copy.</p>
+  <article id="report-doc" class="report-doc"></article>
+</main>
+
+<!-- ═══════════════ DIALOGS ═══════════════ -->
+<dialog id="dlg-note" class="sheet">
+  <form method="dialog" class="sheet-form">
+    <h2 id="note-title" class="sheet-title"></h2>
+    <p id="note-blurb" class="sheet-blurb"></p>
+    <textarea id="note-text" class="note-textarea" rows="5" placeholder="Why does this land the way it does? What does it look like in your life?"></textarea>
+    <div class="sheet-actions">
+      <button value="cancel" class="btn">Cancel</button>
+      <button value="save" id="note-save" class="btn btn-primary">Save note</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-detail" class="sheet">
+  <form method="dialog" class="sheet-form">
+    <div class="detail-head">
+      <div>
+        <h2 id="detail-title" class="sheet-title"></h2>
+        <p id="detail-blurb" class="sheet-blurb"></p>
+      </div>
+      <button type="button" id="detail-star" class="starbtn" aria-label="Star as core value">★</button>
+    </div>
+    <div id="detail-cats" class="seg" role="radiogroup" aria-label="Pile"></div>
+    <textarea id="detail-note" class="note-textarea" rows="4" placeholder="Notes about this value…"></textarea>
+    <div class="sheet-actions">
+      <button type="button" id="detail-delete" class="btn btn-danger" hidden>Remove card</button>
+      <span class="bar-spacer"></span>
+      <button value="cancel" class="btn">Cancel</button>
+      <button value="save" id="detail-save" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-add" class="sheet">
+  <form method="dialog" class="sheet-form">
+    <h2 class="sheet-title">Add your own value</h2>
+    <p class="sheet-blurb">Something that matters to you that isn’t in the deck.</p>
+    <input id="add-name" class="text-input" type="text" maxlength="40" placeholder="Name — e.g. Craft" autocomplete="off">
+    <input id="add-blurb" class="text-input" type="text" maxlength="120" placeholder="to … (what it means to you)" autocomplete="off">
+    <div class="sheet-actions">
+      <button value="cancel" class="btn">Cancel</button>
+      <button value="save" id="add-save" class="btn btn-primary">Add card</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-confirm" class="sheet sheet-narrow">
+  <form method="dialog" class="sheet-form">
+    <h2 id="confirm-title" class="sheet-title"></h2>
+    <p id="confirm-text" class="sheet-blurb"></p>
+    <div class="sheet-actions">
+      <button value="cancel" class="btn">Cancel</button>
+      <button value="ok" id="confirm-ok" class="btn btn-danger">Yes</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
