@@ -137,13 +137,13 @@ button { font: inherit; color: inherit; }
 .zone-hint {
   position: absolute; font-size: 13px; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; text-align: center; line-height: 1.35;
-  opacity: .38; transition: opacity .15s, transform .15s; pointer-events: none;
+  opacity: .38; transition: opacity .15s, scale .15s; pointer-events: none;
 }
 .zone-hint-top { top: 10px; left: 50%; translate: -50% 0; color: var(--imp); }
 .zone-hint-bottom { bottom: 10px; left: 50%; translate: -50% 0; color: var(--unsure); }
-.zone-hint-left { left: 14px; top: 50%; translate: 0 -50%; color: var(--not); }
-.zone-hint-right { right: 14px; top: 50%; translate: 0 -50%; color: var(--very); }
-.zone-hint.hot { opacity: 1; transform: scale(1.12); }
+.zone-hint-left { left: 14px; top: 50%; translate: 0 -50%; color: var(--not); width: min-content; }
+.zone-hint-right { right: 14px; top: 50%; translate: 0 -50%; color: var(--very); width: min-content; }
+.zone-hint.hot { opacity: 1; scale: 1.12; }
 
 .deck { position: relative; width: min(78vw, 420px); aspect-ratio: 5 / 6.4; max-height: 62dvh; }
 .card {
@@ -216,7 +216,10 @@ button { font: inherit; color: inherit; }
 
 @media (max-width: 500px) {
   .sort-buttons { grid-template-columns: repeat(2, 1fr); }
-  .zone-hint-left, .zone-hint-right { display: none; }
+  /* side labels turn vertical, like book spines, to fit the narrow margins */
+  .zone-hint-left, .zone-hint-right { width: auto; writing-mode: vertical-rl; white-space: nowrap; }
+  .zone-hint-left { left: 6px; transform: rotate(180deg); }
+  .zone-hint-right { right: 6px; }
 }
 
 /* ═══════════════ Review ═══════════════ */
