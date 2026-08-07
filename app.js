@@ -191,7 +191,7 @@ function renderSort(enter = false) {
   noteBtn.classList.toggle('has-note', !!note);
   activeCard.style.transform = '';
   activeCard.style.opacity = '';
-  activeCard.classList.remove('flying', 'settling', 'dragging');
+  activeCard.classList.remove('flying', 'settling', 'dragging', 'skipping');
   setStamp(null);
   if (enter) {
     activeCard.classList.remove('entering');
@@ -241,6 +241,24 @@ for (const btn of document.querySelectorAll('.pilebtn')) {
   btn.addEventListener('click', () => assign(btn.dataset.cat, FLY[btn.dataset.cat]));
 }
 
+$('#btn-skip').addEventListener('click', skipCard);
+function skipCard() {
+  const cur = store.current;
+  if (animating || !currentCard()) return;
+  if (cur.index >= cur.order.length - 1) {
+    toast('This is the last card — nowhere left to skip to');
+    return;
+  }
+  const [id] = cur.order.splice(cur.index, 1);
+  cur.order.push(id);
+  save();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { renderSort(true); return; }
+  animating = true;
+  activeCard.classList.remove('dragging', 'settling', 'entering');
+  activeCard.classList.add('skipping');
+  setTimeout(() => { animating = false; renderSort(true); }, 240);
+}
+
 $('#btn-undo').addEventListener('click', () => {
   const cur = store.current;
   if (animating || !cur || cur.index === 0) return;
@@ -257,6 +275,7 @@ document.addEventListener('keydown', e => {
   if (screen !== 'sort' || document.querySelector('dialog[open]')) return;
   const map = { ArrowRight: 'very', ArrowUp: 'imp', ArrowLeft: 'not', ArrowDown: 'unsure' };
   if (map[e.key]) { e.preventDefault(); assign(map[e.key], FLY[map[e.key]]); }
+  if (e.key === 's') { e.preventDefault(); skipCard(); }
   if (e.key === 'z' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('#btn-undo').click(); }
 });
 

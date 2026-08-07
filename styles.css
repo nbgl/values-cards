@@ -161,6 +161,7 @@ button { font: inherit; color: inherit; }
 .card-active.dragging { cursor: grabbing; transition: none; }
 .card-active.settling { transition: transform .45s cubic-bezier(.2, .9, .25, 1.2); }
 .card-active.flying { transition: transform .3s cubic-bezier(.5, 0, .8, .4), opacity .3s; opacity: 0; }
+.card-active.skipping { transition: transform .28s ease-in, opacity .28s ease-in; transform: translateY(26px) scale(.9); opacity: 0; z-index: -1; }
 .card-active.entering { animation: card-enter .38s cubic-bezier(.2, .9, .3, 1.05); }
 @keyframes card-enter {
   from { transform: translateY(16px) scale(.94); opacity: 0; }
@@ -188,11 +189,18 @@ button { font: inherit; color: inherit; }
 .card-stamp[data-cat="not"] { color: var(--not); border-color: var(--not); background: var(--not-soft); }
 .card-stamp[data-cat="unsure"] { color: var(--unsure); border-color: var(--unsure); background: var(--unsure-soft); }
 
+.sort-footer { padding-bottom: max(10px, env(safe-area-inset-bottom)); }
 .sort-buttons {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
-  padding: 8px 16px max(16px, env(safe-area-inset-bottom));
+  padding: 8px 16px 0;
   max-width: 720px; width: 100%; margin: 0 auto;
 }
+.skipbtn {
+  display: block; margin: 4px auto 0; appearance: none; background: none; border: none;
+  color: var(--muted); font-size: 13.5px; font-weight: 600; padding: 9px 18px;
+  cursor: pointer; border-radius: 999px; touch-action: manipulation;
+}
+.skipbtn:active { background: var(--bg-deep); }
 .pilebtn {
   appearance: none; border: none; border-radius: 16px; padding: 12px 6px 11px;
   font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column;

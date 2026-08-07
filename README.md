@@ -21,6 +21,8 @@ The **Backup file** button exports a JSON file you can restore on another device
 
 - One-card-at-a-time sorting with swipe gestures (→ very important, ↑ important,
   ← not important, ↓ unsure) or tap buttons; undo; resume any time
+- Skip a card you're not ready to decide on — it returns at the end of the deck
+  (keyboard: `s`)
 - Notes on any card, during the sort or after
 - Review board with all four piles; move cards between piles
 - Star cards as **core values** and drag to rank them
